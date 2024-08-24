@@ -1,0 +1,18 @@
+{
+  "name": "cbit",
+  "version": "1.0.0",
+  "description": "A git-like CLI tool",
+  "main": "bin/cbit.js",
+  "bin": {
+    "cbit": "./bin/cbit.js"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": ["git", "cli", "version-control"],
+  "author": "0Chord",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^8.3.0"
+  }
+}
