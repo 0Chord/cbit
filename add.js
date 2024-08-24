@@ -10,7 +10,7 @@ const filePaths = [];
 
 function readFilePaths(currentDirPath, targetDirPath) {
   const list = fs.readdirSync(targetDirPath).map(el => path.join(targetDirPath, el));
-  const ignores = getCbitIgnoreContent();
+  const ignores = getCbitIgnoreContent(targetDirPath);
 
   const fileList = list.filter((item) => {
     return !ignores.includes(item.replace(path.join(currentDirPath, '/'), ''));
