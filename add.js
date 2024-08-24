@@ -18,7 +18,7 @@ function readFilePaths(currentDirPath, targetDirPath) {
 
   for (const file of fileList) {
     if (fs.statSync(file).isDirectory()) {
-      readFilePaths(path.join(targetDirPath, file));
+      readFilePaths(currentDirPath,path.join(targetDirPath, file));
     }
   }
   fileList.forEach(el => {

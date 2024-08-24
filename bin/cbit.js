@@ -20,7 +20,7 @@ program
   });
 
 program
-  .command('add [files...]')
+  .command('add')
   .description('Add file(s) to the staging area')
   .action(() => {
     add(process.cwd());

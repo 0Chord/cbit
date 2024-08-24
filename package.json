@@ -1,6 +1,6 @@
 {
   "name": "cbit",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A git-like CLI tool",
   "main": "bin/cbit.js",
   "bin": {
