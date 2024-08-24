@@ -53,6 +53,7 @@ async function restoreFiles(fileList, targetDirPath, commits, lastCommitIndex, c
 }
 
 async function restore(targetDirPath, commitHash) {
+  console.log(commitHash);
   const commitsPath = path.join(targetDirPath, `.cbit`, `index`, `commits`);
   const objectsPath = path.join(targetDirPath, `.cbit`, `objects`);
   if (fs.existsSync(commitsPath)) {
