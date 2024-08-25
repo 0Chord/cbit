@@ -22,4 +22,24 @@ function getTree(commitsPath, objectsPath) {
 function getCbitIgnoreContent(targetPath) {
   return fs.readFileSync(path.join(targetPath, '.cbitignore')).toString().trim().split("\n");
 }
-module.exports = {getTree, getRecentTree,getCbitIgnoreContent};
+
+function readFilePaths(currentDirPath, targetDirPath, callback) {
+  const list = fs.readdirSync(targetDirPath).map(el => path.join(targetDirPath, el));
+  const ignores = getCbitIgnoreContent(targetDirPath);
+
+  const fileList = list.filter((item) => {
+    return !ignores.includes(item.replace(path.join(currentDirPath, '/'), ''));
+  }).map(el => el.replace(path.join(currentDirPath, '/'), ''));
+
+  for (const file of fileList) {
+    if (fs.statSync(file).isDirectory()) {
+      readFilePaths(currentDirPath, path.join(targetDirPath, file));
+    }
+  }
+  fileList.forEach(el => {
+    if (fs.statSync(el).isFile()) {
+      callback(el);
+    }
+  });
+}
+module.exports = {getTree, getRecentTree,readFilePaths};

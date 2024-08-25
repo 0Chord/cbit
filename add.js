@@ -4,29 +4,9 @@ const {createHash} = require("crypto");
 const {createGzip} = require("node:zlib");
 const {pipeline} = require("node:stream/promises");
 const {createReadStream, createWriteStream} = fs;
-const {getTree, getCbitIgnoreContent} = require("./utils");
+const {getTree, readFilePaths} = require("./utils");
 
 const filePaths = [];
-
-function readFilePaths(currentDirPath, targetDirPath) {
-  const list = fs.readdirSync(targetDirPath).map(el => path.join(targetDirPath, el));
-  const ignores = getCbitIgnoreContent(targetDirPath);
-
-  const fileList = list.filter((item) => {
-    return !ignores.includes(item.replace(path.join(currentDirPath, '/'), ''));
-  }).map(el => el.replace(path.join(currentDirPath, '/'), ''));
-
-  for (const file of fileList) {
-    if (fs.statSync(file).isDirectory()) {
-      readFilePaths(currentDirPath,path.join(targetDirPath, file));
-    }
-  }
-  fileList.forEach(el => {
-    if (fs.statSync(el).isFile()) {
-      filePaths.push(el);
-    }
-  });
-}
 
 
 function createIndexFile(targetDirPath, indexList) {
@@ -36,7 +16,9 @@ function createIndexFile(targetDirPath, indexList) {
 
 async function fileZip(targetDirPath) {
   const indexList = [];
-  readFilePaths(targetDirPath, targetDirPath);
+  readFilePaths(targetDirPath, targetDirPath, (filePath)=>{
+    filePaths.push(filePath);
+  });
   for (const file of filePaths) {
     const filePath = path.join(targetDirPath, file);
     const gzip = createGzip();

@@ -3,6 +3,7 @@ const os = require('os');
 const path = require("path");
 const {createGunzip} = require("node:zlib");
 const {pipeline} = require("node:stream/promises");
+const {readFilePaths} = require("./utils");
 const {createReadStream, createWriteStream} = fs;
 
 const DELETED = "deleted";
@@ -32,9 +33,6 @@ async function restoreFiles(fileList, targetDirPath, commits, lastCommitIndex, c
       if (os.platform() === 'win32') {
         separator = '\\';
       }
-      if (fs.existsSync(path.join(targetDirPath, tree[2]))) {
-        fs.unlinkSync(path.join(targetDirPath, tree[2]));
-      }
       const targetPath = path.join(targetDirPath, tree[2]).split(separator).slice(0, -1).join(separator);
       if (!fs.existsSync(targetPath)) {
         fs.mkdirSync(targetPath, {recursive: true});
@@ -56,6 +54,9 @@ async function restore(targetDirPath, commitHash) {
   console.log(commitHash);
   const commitsPath = path.join(targetDirPath, `.cbit`, `index`, `commits`);
   const objectsPath = path.join(targetDirPath, `.cbit`, `objects`);
+  readFilePaths(targetDirPath, targetDirPath, (file)=>{
+    fs.unlinkSync(file);
+  });
   if (fs.existsSync(commitsPath)) {
     const commits = fs.readFileSync(commitsPath).toString().trim().split("\n");
     const commitsSplit = commits.map((item) => item.split(" "));
