@@ -9,7 +9,7 @@ const {restore} = require('../restore');
 const {status} = require('../status');
 
 program
-  .version('1.0.0')
+  .version('1.0.6')
   .description('A git-like CLI tool');
 
 program

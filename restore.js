@@ -54,9 +54,11 @@ async function restore(targetDirPath, commitHash) {
   console.log(commitHash);
   const commitsPath = path.join(targetDirPath, `.cbit`, `index`, `commits`);
   const objectsPath = path.join(targetDirPath, `.cbit`, `objects`);
-  readFilePaths(targetDirPath, targetDirPath, (file)=>{
-    fs.unlinkSync(file);
+  const filesToDelete = readFilePaths(targetDirPath, targetDirPath);
+  filesToDelete.forEach(file => {
+    fs.unlinkSync(path.join(targetDirPath, file));
   });
+
   if (fs.existsSync(commitsPath)) {
     const commits = fs.readFileSync(commitsPath).toString().trim().split("\n");
     const commitsSplit = commits.map((item) => item.split(" "));

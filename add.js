@@ -6,8 +6,6 @@ const {pipeline} = require("node:stream/promises");
 const {createReadStream, createWriteStream} = fs;
 const {getTree, readFilePaths} = require("./utils");
 
-const filePaths = [];
-
 
 function createIndexFile(targetDirPath, indexList) {
   const indexPath = path.join(targetDirPath, `.cbit`, `index`, `index.txt`);
@@ -16,9 +14,7 @@ function createIndexFile(targetDirPath, indexList) {
 
 async function fileZip(targetDirPath) {
   const indexList = [];
-  readFilePaths(targetDirPath, targetDirPath, (filePath)=>{
-    filePaths.push(filePath);
-  });
+  const filePaths = readFilePaths(targetDirPath, targetDirPath);
   for (const file of filePaths) {
     const filePath = path.join(targetDirPath, file);
     const gzip = createGzip();
@@ -36,7 +32,7 @@ async function fileZip(targetDirPath) {
       .digest("hex");
     indexList.push({file, hashValue, fileContent});
   }
-  return indexList;
+  return {indexList, filePaths};
 }
 
 function deleteZips(targetDirPath, fileList) {
@@ -51,7 +47,7 @@ async function add(targetDirPath) {
 
   const commitsPath = path.join(targetDirPath, `.cbit`, `index`, `commits`);
   const objectsPath = path.join(targetDirPath, `.cbit`, `objects`);
-  const indexList = await fileZip(targetDirPath);
+  const {indexList, filePaths} = await fileZip(targetDirPath);
 
   if (fs.existsSync(commitsPath)) {
     const {recentTreeDirPath, recentTreeFileName} = getTree(commitsPath, objectsPath);

@@ -23,7 +23,8 @@ function getCbitIgnoreContent(targetPath) {
   return fs.readFileSync(path.join(targetPath, '.cbitignore')).toString().trim().split("\n");
 }
 
-function readFilePaths(currentDirPath, targetDirPath, callback) {
+function readFilePaths(currentDirPath, targetDirPath) {
+  const filePaths = [];
   const list = fs.readdirSync(targetDirPath).map(el => path.join(targetDirPath, el));
   const ignores = getCbitIgnoreContent(currentDirPath);
 
@@ -32,14 +33,13 @@ function readFilePaths(currentDirPath, targetDirPath, callback) {
   }).map(el => el.replace(path.join(currentDirPath, '/'), ''));
 
   for (const file of fileList) {
-    if (fs.statSync(file).isDirectory()) {
-      readFilePaths(currentDirPath, path.join(targetDirPath, file));
+    const fullPath = path.join(currentDirPath, file);
+    if (fs.statSync(fullPath).isDirectory()) {
+      filePaths.push(...readFilePaths(currentDirPath, fullPath));
+    } else if (fs.statSync(fullPath).isFile()) {
+      filePaths.push(file);
     }
   }
-  fileList.forEach(el => {
-    if (fs.statSync(el).isFile()) {
-      callback(el);
-    }
-  });
+  return filePaths;
 }
 module.exports = {getTree, getRecentTree,readFilePaths};
