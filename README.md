@@ -69,7 +69,7 @@ Homebrew는 macOS와 Linux 사용자를 위한 패키지 관리자입니다. Hom
 
 2. CBIT 설치:
    ```bash
-   brew tap 0chord/cbit
+   brew tap 0Chord/cbit
    brew install cbit
    ```
 
